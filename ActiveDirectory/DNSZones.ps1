@@ -1,0 +1,1 @@
+Get-ADobject -Server "DCBA03.MACRO.COM.AR" -Filter {objectclass -eq "DNSZone"}
