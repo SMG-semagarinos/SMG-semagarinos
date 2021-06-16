@@ -17,10 +17,20 @@ $Buzones = Get-Mailbox -ResultSize Unlimited
 #Nuevo para filtrar solo la gente que este en un CSV
 $CSV = "SearchEMAIL_Delete.csv"
 $CSV = Import-Csv -Path $CSV -Delimiter ";"
-$Buzones = foreach ($CSVUsers in $CSV ) { $Buzones | Where-Object { $_.Identity -eq $CSVUsers.name } }
+$FiltroCSV = @()
+$FiltroCSV = foreach ($CSVUsers in $CSV ) {
+    $FiltroCSV += $Buzones | Where-Object { $_.UserPrincipalName -eq $CSVUsers.Identity } 
+}
+#Control de cantidades
+$FiltroCSV.count
+$CSV.count
+$Buzones.count
+
+$Buzones = $FiltroCSV
+
 
 #Query de busqueda.
-$SearchQuery = 'From:Juha.Pietarinen@savonlinna.fi'
+#$SearchQuery = 'From:Juha.Pietarinen@savonlinna.fi'
 $SearchQuery = 'From:ciide07.educacion@durango.gob.mx'
 #Contenedor del resultado
 $Resultado = @()
