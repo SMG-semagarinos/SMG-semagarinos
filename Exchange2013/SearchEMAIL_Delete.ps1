@@ -3,7 +3,7 @@
 $ServerName = "SRVEXCM02-PROD"
 #
 #region Login Exchange Management Shell localmente
-$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri [http://$ServerName/PowerShell/]http://$ServerName/PowerShell/  -Authentication Kerberos #-Credential $UserCredential
+$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$ServerName/PowerShell/  -Authentication Kerberos #-Credential $UserCredential
 Import-PSSession $Session
 #Remove-PSSession $Session
 
