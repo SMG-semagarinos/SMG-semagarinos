@@ -19,14 +19,16 @@ $CSV = "SearchEMAIL_Delete.csv"
 $CSV = Import-Csv -Path $CSV -Delimiter ";"
 $Buzones = foreach ($CSVUsers in $CSV ) { $Buzones | Where-Object { $_.Identity -eq $CSVUsers.name } }
 
-
+#Query de busqueda.
+$SearchQuery = 'From:Juha.Pietarinen@savonlinna.fi'
+$SearchQuery = 'From:ciide07.educacion@durango.gob.mx'
 #Contenedor del resultado
 $Resultado = @()
 
 ############ Ejecucion masiva ########################################################################################################################
 #Recorro base por base para ver los mensajes de los usuarios.
 foreach ($base in $Bases ) {
-    $Resultado += $Buzones | Where-Object { $_.Database -eq $Base } | Search-Mailbox -SearchQuery 'From:Juha.Pietarinen@savonlinna.fi' -EstimateResultOnly | Select-Object Identity, ResultItemsCount | Where-Object { $_.ResultItemsCount -gt 0 }
+    $Resultado += $Buzones | Where-Object { $_.Database -eq $Base } | Search-Mailbox -SearchQuery $SearchQuery -EstimateResultOnly | Select-Object Identity, ResultItemsCount | Where-Object { $_.ResultItemsCount -gt 0 }
 }
 
 $Resultado.count
