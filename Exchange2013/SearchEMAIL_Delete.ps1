@@ -1,45 +1,102 @@
-######################################################################################################
-
+#region # Conexion hacia Exchange Server ####################################################
 $ServerName = "SRVEXCM02-PROD"
 #
-#region Login Exchange Management Shell localmente
 $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$ServerName/PowerShell/  -Authentication Kerberos #-Credential $UserCredential
 Import-PSSession $Session
 #Remove-PSSession $Session
+#endregion 
+#############################################################################################
 
-
-#Identifico las 40 bases
-$Bases = Get-MailboxDatabase
-#Traigo los buzones activos mas de 10109.
-$Buzones = Get-Mailbox -ResultSize Unlimited 
-
-##### ACA TITO es lo nuevo #####
+#region # Preparacion de CSV ################################################################
 #Nuevo para filtrar solo la gente que este en un CSV
 $CSV = "SearchEMAIL_Delete.csv"
 $CSV = Import-Csv -Path $CSV -Delimiter ";"
-$FiltroCSV = @()
-$FiltroCSV = foreach ($CSVUsers in $CSV ) {
-    $FiltroCSV += $Buzones | Where-Object { $_.UserPrincipalName -eq $CSVUsers.Identity } 
-}
-#Control de cantidades
-$FiltroCSV.count
-$CSV.count
-$Buzones.count
+#endregion
+#############################################################################################
 
-$Buzones = $FiltroCSV
-
-
-#Query de busqueda.
+#region # Query de busqueda #################################################################
 #$SearchQuery = 'From:Juha.Pietarinen@savonlinna.fi'
 $SearchQuery = 'From:ciide07.educacion@durango.gob.mx'
-#Contenedor del resultado
-$Resultado = @()
+#endregion
+#############################################################################################
 
-############ Ejecucion masiva ########################################################################################################################
-#Recorro base por base para ver los mensajes de los usuarios.
-foreach ($base in $Bases ) {
-    $Resultado += $Buzones | Where-Object { $_.Database -eq $Base } | Search-Mailbox -SearchQuery $SearchQuery -EstimateResultOnly | Select-Object Identity, ResultItemsCount | Where-Object { $_.ResultItemsCount -gt 0 }
+#region #### Comienza la busqueda MASIVA ####################################################
+#Recorro Usuarios desde un CSV NO MAS DE 500 usuarios.
+$ResultadoEstimado = @()
+foreach ($CSVUsers in $CSV ) {
+    $ResultadoEstimado += Search-Mailbox -Identity $CSVUsers.Identity -SearchQuery $SearchQuery -EstimateResultOnly | Select-Object Identity, ResultItemsCount | Where-Object { $_.ResultItemsCount -gt 0 }
+}
+##Informe del resultado 
+Write-Host "####################" -ForegroundColor Yellow
+Write-Host "El Resultado de la busqueda de dicha query " -NoNewline -ForegroundColor Green
+Write-Host $SearchQuery -NoNewline -ForegroundColor Red
+Write-Host " dio que se encuentran " -NoNewline -ForegroundColor Green
+Write-Host  $ResultadoEstimado.count -NoNewline -ForegroundColor Yellow
+Write-Host " Mails " -ForegroundColor Red
+Write-Host "####################" -ForegroundColor Yellow
+##Informe del resultado 
+
+#Preguntamos si borramos
+$Borramos = @()
+$Borramos = Read-Host "Quieres borrar? (Y or N)"
+If ( $Borramos -eq "Y" -or $Borramos -eq "y") {
+    Write-Host "####################" -ForegroundColor Yellow
+    Write-Host "Comenzamos el borrado de $SearchQuery " -ForegroundColor Yellow
+    $ResultadoBorrado = @()
+    #
+    foreach ($CSVUsers in $CSV ) {
+        $ResultadoBorrado += Search-Mailbox -Identity $CSVUsers.Identity -SearchQuery $SearchQuery -DeleteContent -Force
+    }
+    Write-Host "####################" -ForegroundColor Yellow
+    $Borramos = @()
+}Else {
+    Write-Host "########## " -ForegroundColor Green
+    Write-Host "No hicimos nada papa!! tranquilo" -ForegroundColor Green
+    $Borramos = @()
 }
 
-$Resultado.count
-######################################################################################################
+
+$ResultadoBorrado.count
+###############################################################################################################################
+##################################
+## Otra opcion:
+# Recorro base por base para ver los mensajes de los usuarios.
+# Identifico las 40 bases
+$Bases = Get-MailboxDatabase
+#Traigo los buzones activos mas de 10000.
+$Buzones = Get-Mailbox -ResultSize Unlimited 
+# Comienzo a buscar base por base.
+$ResultadoEstimadoDB = @()
+
+foreach ($base in $Bases ) {
+    $ResultadoEstimadoDB += $Buzones | Where-Object { $_.Database -eq $Base } | Search-Mailbox -SearchQuery $SearchQuery -EstimateResultOnly | Select-Object Identity, ResultItemsCount | Where-Object { $_.ResultItemsCount -gt 0 }
+}
+
+##Informe del resultado 
+Write-Host "####################" -ForegroundColor Yellow
+Write-Host "El Resultado de la busqueda de dicha query en cada base de datos" -NoNewline -ForegroundColor Green
+Write-Host $SearchQuery -NoNewline -ForegroundColor Red
+Write-Host " dio que se encuentran " -NoNewline -ForegroundColor Green
+Write-Host  $ResultadoEstimadoDB.count -NoNewline -ForegroundColor Yellow
+Write-Host " Mails " -ForegroundColor Red
+Write-Host "####################" -ForegroundColor Yellow
+##Informe del resultado 
+
+#Preguntamos si borramos
+$Borramos = @()
+$Borramos = Read-Host "Quieres borrar? (Y or N)"
+If ( $Borramos -eq "Y" -or $Borramos -eq "y") {
+    Write-Host "####################" -ForegroundColor Yellow
+    Write-Host "Comenzamos el borrado de $SearchQuery " -ForegroundColor Yellow
+    $ResultadoBorrado = @()
+    #
+    foreach ($CSVUsers in $CSV ) {
+        $ResultadoBorrado += $Buzones | Where-Object { $_.Database -eq $Base } | Search-Mailbox -Identity $CSVUsers.Identity -SearchQuery $SearchQuery -DeleteContent -Force
+    }
+    Write-Host "####################" -ForegroundColor Yellow
+    $Borramos = @()
+}Else {
+    Write-Host "########## " -ForegroundColor Green
+    Write-Host "No hicimos nada papa!! tranquilo" -ForegroundColor Green
+    $Borramos = @()
+}
