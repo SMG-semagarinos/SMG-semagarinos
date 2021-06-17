@@ -88,10 +88,10 @@ $Borramos = Read-Host "Quieres borrar? (Y or N)"
 If ( $Borramos -eq "Y" -or $Borramos -eq "y") {
     Write-Host "####################" -ForegroundColor Yellow
     Write-Host "Comenzamos el borrado de $SearchQuery " -ForegroundColor Yellow
-    $ResultadoBorrado = @()
+    $ResultadoBorradoDB = @()
     #
     foreach ($CSVUsers in $CSV ) {
-        $ResultadoBorrado += $Buzones | Where-Object { $_.Database -eq $Base } | Search-Mailbox -Identity $CSVUsers.Identity -SearchQuery $SearchQuery -DeleteContent -Force
+        $ResultadoBorradoDB += $Buzones | Where-Object { $_.Database -eq $Base } | Search-Mailbox -Identity $CSVUsers.Identity -SearchQuery $SearchQuery -DeleteContent -Force
     }
     Write-Host "####################" -ForegroundColor Yellow
     $Borramos = @()
