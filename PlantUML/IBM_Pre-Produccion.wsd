@@ -1,0 +1,52 @@
+@startuml "Equipamiento IBM"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Container.puml
+
+skinparam wrapWidth 200
+skinparam maxMessageSize 200
+'SHOW_PERSON_OUTLINE()
+'Person(Tipo,"hola")
+
+LAYOUT_TOP_DOWN()
+'### Vista como dibujado.
+'LAYOUT_AS_SKETCH()
+'LAYOUT_LEFT_RIGHT()
+'LAYOUT_WITH_LEGEND()
+
+'## Pre-Produccion ############################################## 
+
+System_Boundary(Pre, "PreProduccion") {
+    Container(AIX61PRE, "AIX53PRE", "V. P8, AIX 6.1","---")
+    ContainerDb(CRMdbpre, "CRM", "Oracle 10.2.0.5", "")
+    ContainerDb(APOLOdbpre, "APOLO", "V.11.2.0.3", "")
+    ContainerDb(WEBdbpre, "WEB", "V.11.2.0.2", "")
+    ContainerDb(EASYDOCdbpre, "EASYDOC", "10.2.0.5", "")
+    'otro equipo
+    Container(AIX53PRE, "AIX53PRE", "V. P8, AIX 6.1","---")
+    ContainerDb(PROD11ipre, "PROD11i", "Oracle 9.2.8.0", "")
+
+}
+Rel(AIX61PRE, CRMdbpre, "")
+Rel(AIX61PRE, APOLOdbpre, "")
+Rel(AIX61PRE, WEBdbpre, "")
+Rel(AIX61PRE, EASYDOCdbpre, "")
+Rel(AIX53PRE, PROD11ipre, "")
+
+'## Desarrollo ############################################## 
+Container(arcompunosmg,"ar-compuno-smg", "Windows" )
+Container(arcompunopre,"ar-compuno-pre", "Windows" )
+Container(arwebapptest1,"ar-webapp-test1", "Windows" )
+Container(arwebapppre1,"ar-webapp-pre1", "Windows" )
+Container(arwebappqa,"ar-webapp-qa", "Windows" )
+Container(arwebtest1,"ar-web-test1", "Windows" )
+Container(arwebsrvtest1,"ar-websrv-test1", "Windows" )
+Container(arwebpre1,"ar-web-pre1", "Windows" )
+Container(arcompunotest2,"ar-compuno-test2", "Windows" )
+Container(arwebservpre1,"ar-webserv-pre1", "Windows" )
+Container(arwebqa,"ar-web-qa", "Windows" )
+Container(arwebservqa,"ar-webserv-qa", "Windows" )
+Container(arcompunoqa,"ar-compuno-qa", "Windows" )
+
+
+@enduml

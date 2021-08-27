@@ -1,0 +1,53 @@
+@startuml "Equipamiento IBM"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Container.puml
+skinparam wrapWidth 200
+skinparam maxMessageSize 200
+'SHOW_PERSON_OUTLINE()
+'Person(Tipo,"hola")
+LAYOUT_TOP_DOWN()
+'### Vista como dibujado.
+'LAYOUT_AS_SKETCH()
+'LAYOUT_LEFT_RIGHT()
+'LAYOUT_WITH_LEGEND()
+'## Swiss OnPremise
+System_Boundary(SMG, "SMG") {
+    Container(sisSMG, "SistemasSMG", "Varios", "---")
+}
+
+'## Produccion ############################################## 
+System_Boundary(Prod, "Produccion") {
+    'Otro Equipo
+    System_Boundary(AIX61_cont, "AIX61") {
+    Container(aix61, "AIX61", "V. P7, AIX 6.1", "---")
+    ContainerDb(CRMdb, "CRM", "Oracle 10.2.0.5", "")
+    ContainerDb(APOLOdb, "APOLO", "V.11.2.0.3", "")
+    ContainerDb(WEBdb, "WEB", "V.11.2.0.2", "")
+    ContainerDb(EASYDOCdb, "EASYDOC", "10.2.0.5", "")
+    ContainerDb(CATRMANdb, "CAR RMAN", "11.2.0.2", "")
+    }
+    'Otro Equipo
+    System_Boundary(AIX53_cont, "AIX53") {
+        Container(aix53, "AIX53", "V. P7, AIX 5.3", "---")
+        ContainerDb(PROD11i, "PROD11i", "Oracle 9.2.8.0", "")
+    }
+    'Equipos
+    Container(arwebsmg4, "ar-web-smg4", "SO: WS 2012r2" )
+    Container(arwebservsmg6, "ar-webserv-smg6", "SO: WS 2012r2" )
+    Container(arwebservsmg5, "ar-webserv-smg5", "SO: WS 2012r2" )
+    Container(arwebservsmg7, "ar-webserv-smg7", "SO: WS 2012r2" )
+    Container(arwebappsmg8, "ar-webapp-smg8", "SO: WS 2012r2" )
+    Container(ardigitalsmg, "ar-digital-smg", "SO: WS 2012r2" )
+    Container(arcompunosmg, "ar-compuno-smg", "SO: WS 2003" )
+}
+'Rel_R(Tipo,Prod,"")
+Rel_D(SMG, Prod, "")
+Rel_U(aix61, CRMdb, "")
+Rel(aix61, APOLOdb, "")
+Rel(aix61, WEBdb, "")
+Rel(aix61, EASYDOCdb, "")
+Rel(aix61, CATRMANdb, "")
+Rel(aix53, PROD11i, "")
+
+@enduml

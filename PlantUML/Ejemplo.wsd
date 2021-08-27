@@ -1,4 +1,4 @@
-@startuml "messagebus"
+@startuml "GeneracionQR"
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 ' uncomment the following line and comment the first to use locally
 ' !include C4_Container.puml
@@ -7,6 +7,7 @@ skinparam wrapWidth 200
 skinparam maxMessageSize 200
 
 LAYOUT_TOP_DOWN()
+'### Vista como dibujado.
 'LAYOUT_AS_SKETCH()
 LAYOUT_WITH_LEGEND()
 
@@ -24,7 +25,10 @@ System_Boundary(c1, "Customer Information") {
     Container(audit_store, "Audit Store", "Event Store", "Stores information about events that have happened")
 }
 
-Rel(customer, app, "Uses", "HTTPS")
+
+'### Relaciones!
+
+Rel_R(customer, app, "Uses", "HTTPS")
 
 Rel_R(app, customer_service, "Updates customer information using", "async, JSON/HTTPS")
 

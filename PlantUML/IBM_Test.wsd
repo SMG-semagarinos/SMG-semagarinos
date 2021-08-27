@@ -1,0 +1,44 @@
+@startuml "Equipamiento IBM Testing"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Container.puml
+
+skinparam wrapWidth 200
+skinparam maxMessageSize 200
+'SHOW_PERSON_OUTLINE()
+'Person(Tipo,"hola")
+
+LAYOUT_TOP_DOWN()
+'### Vista como dibujado.
+'LAYOUT_AS_SKETCH()
+'LAYOUT_LEFT_RIGHT()
+'LAYOUT_WITH_LEGEND()
+
+'## Desarrollo ############################################## 
+'# Equipamiento AIX
+System_Boundary(Desa, "Desarrollo") {
+    Container(aix61d, "aix61d", "AIX 5.3","---")
+    ContainerDb(PROD11idb, "PROD11i", " V: 9.2.8.0", "")
+    'otro equipo
+    Container(aix53d, "aix53d", "AIX 6.1, ","---")
+    ContainerDb(CRMdb, "CRM", "V.10.2.0.5", "")
+    ContainerDb(APOLOdb, "APOLO", "V.11.2.0.3", "")
+    ContainerDb(WEBdb, "WEB", "V.11.2.0.2", "")
+    ContainerDb(EASYDOCdb, "EASYDOC", "V. 10.2.0.5", "")
+
+}
+'#Relaciones de Bases de datos
+Rel_U(aix61d, PROD11idb, "")
+Rel(aix53d, CRMdb, "")
+Rel(aix53d, APOLOdb, "")
+Rel(aix53d, WEBdb, "")
+Rel(aix53d, EASYDOCdb, "")
+'# Equipamiento Windows
+Container(arwebapptest1,"ar-webapp-test1","Windows","-")
+Container(arwebtest1,"ar-web-test1","Windows","-")
+Container(arwebsrvtest1,"ar-websrv-test1","Windows","-")
+Container(arcompunotest2,"ar-compuno-test2","Windows","-")
+
+
+
+@enduml

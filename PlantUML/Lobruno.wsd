@@ -1,0 +1,33 @@
+@startuml "Lobruno TSX"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Container.puml
+
+skinparam wrapWidth 200
+skinparam maxMessageSize 200
+SHOW_PERSON_OUTLINE()
+
+LAYOUT_TOP_DOWN()
+'### Vista como dibujado.
+'LAYOUT_AS_SKETCH()
+'LAYOUT_LEFT_RIGHT()
+'LAYOUT_WITH_LEGEND()
+
+'## Produccion ############################################## 
+Person(TipoExterno,"x5 Operadores")
+
+System_Boundary(SMG, "OnPremise") {
+    System(TSX, "TSX", "RDP Server, IP: | DNS:")
+    System(XFS, "XFS", "File Server aloca .EXE, IP: 192.168.104.87 | DNS: XFS")
+    ContainerDb(LobrunoDB, "SYBASE DB1", "DNS: DB1 | IP: 192.168.1.142", "")
+    Person(TipoOnPremise,"PC LAN San Martin")
+}
+
+Rel_D(TipoExterno, TSX, "VPN - RDP:3389")
+Rel_D(TSX, XFS, "FS:445")
+Rel_D(TSX, LobrunoDB, "SQL:4100")
+Rel_U(TipoOnPremise, LobrunoDB, "SQL:4100")
+Rel_U(TipoOnPremise, XFS, "FS:445")
+
+
+@enduml
